@@ -1,0 +1,33 @@
+<!-- Modal -->
+
+{% load static %}
+
+<div class="modal fade" id="likersModal" tabindex="-1" aria-labelledby="likersModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Likers</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                
+                <ul>
+                    <!-- Display content of the queryset for testing -->
+                    <li>Content of likers queryset's user username attribute: {{ likers }}</li>
+            
+                    <!-- Iterate over likers queryset to display usernames -->
+                    {% if likers %}
+                        <!-- Likers exist, iterate over them -->
+                        {% for liker in likers %}
+                            <li>{{ liker.username }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <!-- No likers found -->
+                        <p>No likes</p>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

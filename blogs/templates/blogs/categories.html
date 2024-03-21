@@ -1,0 +1,72 @@
+{% extends 'blogs/base.html' %}
+
+{% block content %}
+
+<div class="pt-5 bg-dark">    
+    <div class="container bg-dark pt-4">
+        <h1 class="text-light">{{ category }}</h1>
+        <hr style="color:white;">
+        <div class="row">
+            {% if user.is_authenticated %}
+            <div class="">
+                <h3 class="text-warning">Hey, wanna drop a blog post today?</h3><span>
+                <a href="{% url 'blogs:blog-form' %}" class="btn btn-outline-warning">Yes, I'm feeling creative!</a>
+                </span>
+            </div>
+            {% endif %}
+            <hr>
+            {% for blog in blogs %}
+            {% if blog.featured %}
+            <div class="col-md-6 col-lg-4 py-2 bg-light border border-dark border-5">
+                <img class="border border-warning border-1" style="width:100%; height:300px; object-fit:cover;" src="{{ blog.image.url }}">
+                <h2>{{ blog.title }} <span style="font-size:10px;">FEATURED <i class="bi bi-check-circle-fill text-warning"></i></span></h2>
+                <i><a style="text-decoration:none" class="text-warning" href="{% url 'profile' blog.author.username %}">{{blog.author}}</a></i>
+                <p class="text-muted">{{ blog.teaser }}</p>
+                <a href="{% url 'blogs:show-blog' pk=blog.pk %}" class="btn btn-warning">Read Blog</a>
+            </div>
+            {% else %}
+            <div class="col-md-6 col-lg-4 py-2 bg-light border border-dark border-5">            
+                <img class="border border-warning border-1" style="width:100%; height:300px; object-fit:cover;" src="{{ blog.image.url }}">
+                <h2>{{ blog.title }}</h2>
+                <i><a style="text-decoration:none" class="text-warning" href="{% url 'profile' blog.author.username %}">{{blog.author}}</a></i>
+                <p class="text-muted">{{ blog.teaser }}</p>
+                <a href="{% url 'blogs:show-blog' pk=blog.id %}" class="btn btn-warning">Read Blog</a>
+            </div>
+        {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item {% if not blogs.has_previous %}disabled{% endif %}">
+                        <a class="page-link" href="?page=1" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% for page_num in blogs.paginator.page_range %}
+                    <li class="page-item {% if page_num == blogs.number %}active{% endif %}">
+                        <a class="page-link bg-dark" style="
+                        border-radius:10px;" href="?page={{ page_num }}">{{ page_num }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if blogs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ blogs.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+
+
+    </div>
+</div>
+
+{%endblock%}

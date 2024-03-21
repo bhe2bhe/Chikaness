@@ -1,0 +1,92 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="pt-5">
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} bg-warning">
+        {{ message|safe }}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+<div class="container">
+    <h2 class="display-3 pt-2">Comments & Stars</h2>
+    <div class="row mx-6 bg-light justify-content-center align-items-center" style="
+        border-radius:20px;">          
+        <div class="col-lg-7 text-center border border-top-0 border-warning pb-3">
+            {% comment %} <p><a href="{% url 'profile' username=post.user %}" style="text-decoration: none; font-size:50px; font-weight:bolder; color:rgb(87, 2, 87);">{{ post.user }}:</a></p>
+            <p style="color:gray;">{{post.content}}</p>
+            {% endcomment %}
+            <a href="{{ post.image.url }}" data-lightbox="image">
+                <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 460px;">
+            </a>
+                <p class="text-muted my-4" style="text-align: left;">
+                <div class="bulletin-post" id="post{{ post.id }}">
+                    {{ post.content|truncatewords:60 }}
+                        {% if post.content|wordcount > 60 %}
+                            <!-- Hidden full text -->
+                            <span class="full-text" style="display: none;">
+                                {{ post.content }}
+                            </span>
+                            <!-- Toggle link -->
+                            <a href="#" class="toggle-link" style="
+                            text-decoration:none; 
+                            color:blue;">Show more</a>
+                        {% endif %}
+                </div>
+            </p>            
+            <a class="btn btn-outline-warning" 
+            href="{% url 'users:user-announcements' username=post.user %}"> {{post.user}}'s announcements</a>            
+            <a class="btn btn-warning" 
+            href="{% url 'users:show-bulletin-board' %}"> Bulletin Board</a>
+            <hr>
+            {% if user.is_authenticated %}
+            <form action="{% url 'users:add-comment' %}" method="POST" id="{{post.id}}">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}"> <!-- Hidden input field for post ID -->
+                <div class="form-group">
+                    <label for="id_content">Leave a comment:</label>
+                    <textarea class="form-control" id="id_content" name="content" rows="3" required></textarea>
+                </div><br>
+                <button type="submit" class="btn btn-warning">Submit</button>
+            </form>
+            {% endif %}
+        </div>
+
+
+        <div class="col-lg-5 py-3">
+            
+            {% if comments %}
+            {% for comment in comments %}
+            <p>
+            <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">         
+                <span class="text-warning"><b>{{ comment.user }}</b></span>
+                <span style="font-size:10px; color:gray;">
+                    ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                </span>:                                
+            </a>  
+                {{comment.content|linebreaks}}
+            </p>
+            {% endfor %}
+            {% else %}
+            <p>No comments yet.</p>
+            {% endif %}
+            <hr>       
+            {% if likers %}
+            {% for liker in likers %}
+                <p><a href="{% url 'profile' username=liker.username %}" style="text-decoration: none;"><img width="30" height="30" style="object-fit:cover; border-radius:15px;"
+                src="{{liker.profile.profile_pic.url}}"><span class="text-warning ps-2"><strong>{{liker.username}}</strong></span></a></p>
+            {% endfor %}
+            {% else %}
+                <p class="display-6">No <i class="bi bi-star"></i><i class="bi bi-star-half"></i> yet.<p>
+                <p>Be the first person to send a star to this announcement.</p>
+                <a class="btn btn-outline-warning" href="{% url 'users:user-announcements' username=post.user %}"> Go back to {{post.user}}'s announcements</a>
+            {% endif %}     
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,275 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+    
+<section id="bulletin-board" class="mt-5">               
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} bg-warning">
+            {{ message|safe }}
+        </div>
+        {% endfor %}
+        {% endif %}
+    <div class="container mb-0 pb-5 mt-5">
+        <div class="row justify-content-center bg-light py-3">
+            <div class="col-md-8 text-center">
+
+                {% if user.is_authenticated and request.user.profile.verified %}
+                <form action="{% url 'users:bulletin-board' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}    
+                    <div class="form-floating">
+                        <textarea class="form-control" name="content" id="floatingTextarea" oninput="autoAdjustTextarea()"></textarea>
+                        <label for="floatingTextarea"><span class="text-secondary fst-italic">Make an announcement...</span></label>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="image"></label>
+                        <input type="file" class="form-control-file" id="image" name="image">
+                    </div>
+                    <button type="submit" class="btn btn-warning mt-3">
+                        Post on Bulletin Board
+                    </button>
+                </form>
+            {% endif %}
+            {% if not user.is_authenticated %}
+                <a class="fst-italic text-warning" style="text-decoration:none;" href="/login">Log in to make comments on announcements and blogs.</a>
+            {% endif %}
+            {% if user.is_authenticated and not request.user.profile.verified %}
+            <p><i>Non-verified members cannot post on Bulletin Board.</i><span> <a class="fst-italic text-warning" style="text-decoration:none;" href="{% url 'blogs:blog-form' %}">Write a blog instead.</a></span></p>
+            {% endif %}
+        </div>
+    </div>
+        <div class="text-center mt-3">
+            <img width="120" height="120" style="object-fit:cover; border-radius:60px;" src="/pictures/profile_pictures/profilepic.jpg"/><br>
+        </div>
+        
+        
+        <div class="text-center pt-3">
+            <h2>{{ profile.user.username }}</h2>
+            
+        </div>
+            {% if user.is_authenticated %}
+
+    
+            {% else %}
+            <div class="container mb-0 pb-5">
+                <div class="text-center">
+                    <h3 class="fw-light">Join Us</h3>
+                    <p class="lead">Get the latest updates...</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 text-center">
+                        <p class="text-muted my-4">
+                            Stay in the loop with the latest updates and exciting events. 
+                            Embrace the joy of community and be part of the festivities. 
+                            Your presence matters — come join us in the celebration of moments 
+                            and the creation of cherished memories! Bring your friends along for the ride.    
+                        </p>
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reg-modal">
+                            Request Access
+                        </button>
+                    </div>    
+                </div>
+            </div>
+            {% endif %}
+        {% comment %} </section> {% endcomment %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+
+                <!-- this is where the loop for bulletin board starts -->
+
+                {% for post in posts %}
+                {% if post.highlight %}
+                <div class="bg-light border border-2 border-warning p-2 mb-3" style="
+                border-radius:10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                ">     
+                <div class="">
+                    <p style="font-size:12px;
+                            font-weight:bolder; color:rgb(255, 191, 0);
+                            margin-bottom: 1px;">HIGHLIGHT</p>
+                        <p class="fw-bold text-warning">
+                            <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                    <p class="fw-bold text-warning">
+                        <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                            <i class="bi bi-check-circle-fill text-warning"></i>                        
+                             <span>{{ post.user }}</span>                                
+                        </a>                   
+                            <span style="font-size:10px; color:gray;">
+                            ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                            </span>
+                    </p>
+                    {% if post.user == user.username %}
+                    <form action="{% url 'users:delete-post' post.id %}" method="POST">
+                        {% csrf_token %}                   
+                        <button type="submit" class="text-danger" style="border:none;"><i class="bi bi-trash"></i></button>
+                        <span style="font-size: 10px; ">Delete announcement</span>                          
+                    </form>
+                {% endif %}
+                
+                <div class="row align-items-center pt-3">
+                    <div class="col-lg-5">
+                        <a href="{{ post.image.url }}" data-lightbox="image">
+                            <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 300px;">
+                        </a>
+                    </div>
+                    <div class="col-lg-7">
+                        <p class="text-muted my-4" style="text-align: left;">
+                            <div class="bulletin-post" id="post{{ post.id }}">
+                                {{ post.content|linebreaksbr|truncatewords:60 }}
+                                {% if post.content|wordcount > 60 %}
+                                    <!-- Hidden full text -->
+                                    <span class="full-text" style="display: none;">
+                                        {{ post.content }}
+                                    </span>
+                                    <!-- Toggle link -->
+                                    <a href="#" class="toggle-link" style="
+                                    text-decoration:none; 
+                                    color:blue;">Show more</a>
+                                {% endif %}
+                            </div>
+                        </p>
+                    </div>
+                    
+                </div>
+                {% else %}  
+                <div class="border border-2 border-warning p-2 mb-3" style="
+                    border-radius:10px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    ">     
+                    <div class="">
+                        <p class="fw-bold text-warning">
+                            <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                                <span>{{ post.user }}</span>                                
+                            </a>                   
+                                <span style="font-size:10px; color:gray;">
+                                ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                            </span>
+                        </p>
+                        {% if post.user == user.username %}
+                        <form action="{% url 'users:delete-post' post.id %}" method="POST">
+                            {% csrf_token %}                   
+                            <button type="submit" class="text-danger" style="border:none; background-color: white;"><i class="bi bi-trash"></i></button>
+                            <span style="font-size: 10px; ">Delete announcement</span>                          
+                        </form>
+                    {% endif %}
+                    
+                    <div class="row align-items-center pt-3">
+                        <div class="col-lg-5">
+                            <a href="{{ post.image.url }}" data-lightbox="image">
+                                <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 300px;">
+                            </a>
+                        </div>
+                        <div class="col-lg-7">
+                            <p class="text-muted my-4" style="text-align: left;">
+                                <div class="bulletin-post" id="post{{ post.id }}">
+                                    {{ post.content|truncatewords:60 }}
+                                    {% if post.content|wordcount > 60 %}
+                                        <!-- Hidden full text -->
+                                        <span class="full-text" style="display: none;">
+                                            {{ post.content }}
+                                        </span>
+                                        <!-- Toggle link -->
+                                        <a href="#" class="toggle-link" style="
+                                        text-decoration:none; 
+                                        color:blue;">Show more</a>
+                                    {% endif %}
+                                </div>
+                            </p>
+                        </div>
+                        
+                    </div>
+                    
+                    
+                {% endif %}                       
+
+                    </div>
+                    <form action="{% url 'users:like-post' %}" method="POST" class="like-form" id="{{post.id}}">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{ post.id }}">
+                        
+                        <p class="fst-italic" style="font-size:12px;">
+                            {% if user not in post.liked.all %}
+                            <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                                Send a star
+                            </button>                                
+                            {% else %}
+                            <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                                Unsend star
+                            </button>
+                            {% endif %} 
+                            <div class="d-inline fw-bold">
+                                <a href="{% url 'users:likers' post.id %}" 
+                                {% comment %} data-bs-toggle="modal" data-bs-target="#likersModal"> {% endcomment %}
+                                    <span class="like-count{{post.id}}">{{ post.no_of_likes }}</a></span> 
+                                <span><i class="bi bi-star-fill text-danger"></i></span> ||
+                                <a href="{% url 'users:likers' post.id %}">
+                                <span>{{ post.no_of_comments }}</span></a>
+                                {% if post.no_of_comments == 1 %}Comment
+                                {%else%} Comments {% endif %}
+                            </div>
+                        </p>
+                    </form>   
+        
+                </div>
+                
+                {% endfor %}
+                <!-- loop ends here -->
+
+                <div class="pagination">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item {% if not posts.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="?page=1" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% for page_num in posts.paginator.page_range %}
+                            <li class="page-item {% if page_num == posts.number %}active{% endif %}">
+                                <a class="page-link bg-dark" style="
+                                border-radius:10px;" href="?page={{ page_num }}">{{ page_num }}</a>
+                            </li>
+                            {% endfor %}
+                            {% if posts.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link" aria-hidden="true">&raquo;</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                
+                
+                    
+            </div>     
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Warning!</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you absolutely sure that we know each other and that you are not here to be a nuisance? Your account will automatically be deleted on the first sign of mischief. Your account may be deleted if name is ambiguous.</p>
+                <label for="modal-email" class="form-label">Your email address:</label>
+                <input type="text" class="form-control" id="modal-email" placeholder="e.g. mario@example.com">
+            </div>
+            <div class="modal-footer bg-light justify-content-center">
+                <a href="{% url 'register' %}" class="btn btn-primary">I am sure!</a>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container-lg bg-light" style="margin-top: 5rem; padding-top: 8px; padding-bottom: 8px;">
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-secondary">Register</button>
+    </form>
+</div>
+{% endblock %}

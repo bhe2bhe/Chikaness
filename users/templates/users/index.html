@@ -1,0 +1,469 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <title>
+        {% if user.is_authenticated %}
+            {{ user.username }}
+        {% else %}
+            Chikaness
+        {% endif %}
+    </title>
+    <style>
+        #yaela {
+          padding-top: 56px; /* Adjust based on your navbar height */
+        }
+        .custom-error {
+            color: red;
+            font-size: 20px;
+            background-color: #ffe6e6; /* Light red background color */
+            padding: 10px; /* Adjust padding as needed */
+            border: 1px solid red; /* Optional: Add a border */
+        }
+        .form-control {
+            overflow-y: hidden; /* Hide the vertical scrollbar */
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            /* Add other styles as needed */
+        }
+        
+      </style>
+
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-xxl">
+            {% if user.is_authenticated %}
+            <a href="{% url 'profile' username=request.user.username %}" class="navbar-brand">
+                <span class="fw-bold text-warning">
+                    <i class="bi bi-person-check text-warning"></i>
+                    <span class="text-white">Welcome,</span> <span class="text-warning" >{{ user.username }}! </span>
+                </span>
+            </a>
+            {% else %}
+            <a href="/" style="text-decoration:none;">    
+            <span class="navbar-brand">
+                <i class="bi bi-shield-fill-exclamation text-warning"></i>
+                <span class="fw-bold text-warning">                
+                    Limited access
+                </span>
+            </span>
+        </a>
+            {% endif %}
+
+            <!-- toggle button -->
+                
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+            <div class="collapse navbar-collapse justify-content-end align-center" id="main-nav">
+                <ul class="navbar-nav">
+                    <form class="d-flex" role="search" action="{% url 'users:search' %}" method='POST'>
+                        {% csrf_token %}
+                        <input class="form-control me-2" type="text" name="username" placeholder="Search for user..." aria-label="Search">
+                        <button class="btn btn-outline-warning" type="submit"><i class="bi bi-search-heart"></i></button>
+                      </form>
+                    <li class="nav-item">
+                        <a href="bulletin-board-all" class="nav-link  text-light"><i class="bi bi-clipboard-heart"></i>Bulletin Board</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'blogs:blogs' %}" class="nav-link  text-light"><i class="bi bi-journal"></i>Blogs</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-outline-warning">Log Me Out, Gotta Run</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-warning">Log Me In</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div style="margin-top:56px;" class="alert alert-{{ message.tags }} bg-warning">
+            {{ message|safe }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- main image & intro text -->
+    <section id="yaela">
+        <div class="container-lg mt-5">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-5 text-center text-md-start">
+                    <h1>
+                        <div class="display-2">Welcome to<span class="fw-bold"> Chikaness!</span></div>
+                        <div class="display-5 text-muted">Your go-to for daily doses of fun and goodness</div>
+                    </h1>
+                    <p class="lead my-4 text-muted">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error quisquam vitae modi facere eaque nihil harum aspernatur saepe, inventore totam amet numquam sed, voluptate quam, voluptatibus nemo? Minus.</p>
+                    
+                    <!-- open sidebar / offcanvas -->
+                        <!-- codes -->
+                    <!-- offcanvas end -->
+                </div>
+                <div class="col-sm-8 col-md-5 text-center">
+                    <span class="tt" data-bs-placement="bottom" title="Y&Z">
+                        <img class="img-fluid" style="box-shadow: 0 1px 8px black;
+                        filter: brightness(120%) contrast(90%) saturate(120%);
+                        border-radius: 10px;" src="{% static 'users/images/chikaness-try-image.jpg' %}" alt="">
+                    </span>
+                    <a href="{% url 'blogs:featured' %}" class="btn btn-outline-warning mt-4">Featured Blogs</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bulletin-board">
+        <div class="container mb-0 pb-5 mt-5">
+            <div class="row justify-content-center bg-light py-3">
+                <div class="col-md-8 text-center">
+
+            {% if user.is_authenticated and request.user.profile.verified %}
+                <form action="{% url 'users:bulletin-board' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}    
+                    <div class="form-floating">
+                        <textarea class="form-control" name="content" id="floatingTextarea" oninput="autoAdjustTextarea()"></textarea>
+                        <label for="floatingTextarea"><span class="text-secondary fst-italic">Make an announcement...</span></label>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="image"></label>
+                        <input type="file" class="form-control-file" id="image" name="image">
+                    </div>
+                    <button type="submit" class="btn btn-warning mt-3">
+                        Post on Bulletin Board
+                    </button>
+                </form>
+            {% endif %}
+            {% if not user.is_authenticated %}
+                <a class="fst-italic text-warning" style="text-decoration:none;" href="/login">Log in to make comments on announcements and blogs.</a>
+            {% endif %}
+            {% if user.is_authenticated and not request.user.profile.verified %}
+            <p><i>Non-verified members cannot post on Bulletin Board.</i><span> <a class="fst-italic text-warning" style="text-decoration:none;" href="{% url 'blogs:blog-form' %}">Write a blog instead.</a></span></p>
+            {% endif %}
+            </div>
+        </div>
+            <div class="text-center mt-3">
+                <img width="120" height="120" style="object-fit:cover; border-radius:60px;" src="/pictures/profile_pictures/profilepic.jpg"/><br>
+            </div>
+            
+            
+            <div class="text-center pt-3">
+                <h2>Bulletin Board</h2>
+                
+            </div>
+                {% if user.is_authenticated %}
+    
+        
+                {% else %}
+                <div class="container mb-0 pb-5">
+                    <div class="text-center">
+                        <h2>Join Us</h2>
+                        <p class="lead">Get the latest updates...</p>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <p class="text-muted my-4">
+                                Stay in the loop with the latest updates and exciting events. 
+                                Embrace the joy of community and be part of the festivities. 
+                                Your presence matters — come join us in the celebration of moments 
+                                and the creation of cherished memories! Bring your friends along for the ride.    
+                            </p>
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reg-modal">
+                                Request Access
+                            </button>
+                        </div>    
+                    </div>
+                </div>
+                {% endif %}
+            {% comment %} </section> {% endcomment %}
+
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+
+                    <!-- this is where the loop for bulletin board starts -->
+                    
+                    {% for post in posts %}
+                    {% if post.highlight %}
+                    <div class="bg-light border border-2 border-warning p-2 mb-3" style="
+                    border-radius:10px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                    ">     
+                    <div class="">
+                        <p style="font-size:12px;
+                                font-weight:bolder; color:rgb(255, 191, 0);
+                                margin-bottom: 1px;">HIGHLIGHT</p>
+                            <p class="fw-bold text-warning">
+                                <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                        <p class="fw-bold text-warning">
+                            <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                                <i class="bi bi-check-circle-fill text-warning"></i>                        
+                                 <span>{{ post.user }}</span>                                
+                            </a>                   
+                                <span style="font-size:10px; color:gray;">
+                                ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                            </span>
+                        </p>
+                        {% if post.user == user.username %}
+                        <form action="{% url 'users:delete-post' post.id %}" method="POST">
+                            {% csrf_token %}                   
+                            <button type="submit" class="text-danger" style="border:none; background-color:white;"><i class="bi bi-trash"></i></button>
+                            <span style="font-size: 10px; ">Delete announcement</span>                          
+                        </form>
+                    {% endif %}
+                    
+                    <div class="row align-items-center pt-3">
+                        <div class="col-lg-5">
+                             <a href="{{ post.image.url }}" data-lightbox="image" class="lightbox-link">
+                            <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 300px;">
+                            <div class="close-button">x</div>
+                            </a>
+                        </div>
+                        <div class="col-lg-7">
+                            <p class="text-muted my-4" style="text-align: left;">
+                                <div class="bulletin-post" id="post{{ post.id }}">
+                                    {{ post.content|truncatewords:60 }}
+                                    {% if post.content|wordcount > 60 %}
+                                        <!-- Hidden full text -->
+                                        <span class="full-text" style="display: none;">
+                                            {{ post.content }}
+                                        </span>
+                                        <!-- Toggle link -->
+                                        <a href="#" class="toggle-link" style="
+                                        text-decoration:none; 
+                                        color:blue;">Show more</a>
+                                    {% endif %}
+                                </div>
+                            </p>
+                        </div>
+                        
+                    </div>
+                    {% else %}  
+                    <div class="border border-2 border-warning p-2 mb-3" style="
+                        border-radius:10px;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        ">     
+                        <div class="">
+                            <p class="fw-bold text-warning">
+                                <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                                    <span>{{ post.user }}</span>                                
+                                </a>                   
+                                    <span style="font-size:10px; color:gray;">
+                                    ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                                </span>
+                            </p>
+                            {% if post.user == user.username %}
+                            <form action="{% url 'users:delete-post' post.id %}" method="POST">
+                                {% csrf_token %}                   
+                                <button type="submit" class="text-danger" style="border:none; background-color:white;"><i class="bi bi-trash"></i></button>
+                                <span style="font-size: 10px; ">Delete announcement</span>                          
+                            </form>
+                        {% endif %}
+                        
+                        <div class="row align-items-center pt-3">
+                            <div class="col-lg-5">
+                                <a href="{{ post.image.url }}" data-lightbox="image">
+                                    <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 300px;">
+                                </a>
+                            </div>
+                            <div class="col-lg-7">
+                                <p class="text-muted my-4" style="text-align: left;">
+                                    <div class="bulletin-post" id="post{{ post.id }}">
+                                        {{ post.content|truncatewords:60 }}
+                                        {% if post.content|wordcount > 60 %}
+                                            <!-- Hidden full text -->
+                                            <span class="full-text" style="display: none;">
+                                                {{ post.content }}
+                                            </span>
+                                            <!-- Toggle link -->
+                                            <a href="#" class="toggle-link" style="
+                                            text-decoration:none; 
+                                            color:blue;">Show more</a>
+                                        {% endif %}
+                                    </div>
+                                </p>
+                            </div>
+                            
+                        </div>
+                        
+                        
+                    {% endif %}                       
+    
+                        </div>
+                        <form action="{% url 'users:like-post' %}" method="POST" class="like-form" id="{{post.id}}">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                            
+                            <p class="fst-italic" style="font-size:12px;">
+                                {% if user not in post.liked.all %}
+                                <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                                    Send a star
+                                </button>                                
+                                {% else %}
+                                <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                                    Unsend star
+                                </button>
+                                {% endif %} 
+                                <div class="d-inline fw-bold">
+                                    <a href="{% url 'users:likers' post.id %}" 
+                                    {% comment %} data-bs-toggle="modal" data-bs-target="#likersModal"> {% endcomment %}
+                                        <span class="like-count{{post.id}}">{{ post.no_of_likes }}</a></span> 
+                                    <span><i class="bi bi-star-fill text-danger"></i></span> || 
+                                    <a href="{% url 'users:likers' post.id %}">
+                                        <span>{{ post.no_of_comments }}</span></a>
+                                        {% if post.no_of_comments == 1 %}Comment
+                                        {%else%} Comments {% endif %}                           
+                                </div>
+                            </p>
+                        </form>   
+            
+                    </div>
+                    
+                    {% endfor %}
+
+                    <!-- loop ends here -->
+                    {% if user.is_authenticated %}
+                    <div class="text-center">
+                        <a style="text-decoration:none; color:#d4a108;" href="{% url 'users:show-bulletin-board' %}"><strong>View entire Bulletin Board</strong></a>
+                    </div>
+                    {% endif %}
+                </div>     
+            </div>
+        </div>
+    </section>
+
+    <!-- modals / popup -->
+
+    <!-- modal itself -->
+
+    <div class="modal fade" id="reg-modal" tabindex="-1" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-title">Warning!</h5>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you absolutely sure that we know each other and that you are not here to be a nuisance? Your account will automatically be deleted on the first sign of mischief. Your account may be deleted if name is ambiguous.</p>
+                    <label for="modal-email" class="form-label">Your email address:</label>
+                    <input type="text" class="form-control" id="modal-email" placeholder="e.g. mario@example.com">
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <a href="{% url 'register' %}" class="btn btn-primary">I am sure!</a>
+                </div>
+            </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Ensure jQuery is properly loaded -->
+        <script>
+            function autoAdjustTextarea() {
+                const textarea = document.getElementById("floatingTextarea");
+                textarea.style.height = "auto";
+                textarea.style.height = (textarea.scrollHeight) + "px";
+            }
+
+            $( document ).ready(function() {
+            let display = false
+            // $(".cmt_btn").click(function () {
+            //   if (display===false) {
+            //     $(this).next(".comment-box").show("slow");
+            //     display=true
+            //   } else {
+            //     $(this).next(".comment-box").hide("slow");
+            //   }
+            // });
+
+            $('.like-form').submit(function(e) {
+                e.preventDefault()
+                
+                const post_id = $(this).attr('id')
+                
+                const likeText = $(`.like-btn${post_id}`).text()
+                const trim = $.trim(likeText)
+                
+                const url = $(this).attr('action')
+                
+                let res;
+                const likes = $(`.like-count${post_id}`).text()
+                const trimCount = parseInt(likes)
+                
+                $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                    'post_id':post_id,
+                },
+                success: function(response) {
+                    if(trim === 'Unsend star') {
+                    $(`.like-btn${post_id}`).text('Send a star')
+                    res = trimCount - 1
+                    } else {
+                    $(`.like-btn${post_id}`).text('Unsend star')
+                    res = trimCount + 1
+                    }
+
+                    $(`.like-count${post_id}`).text(res)
+                },
+                error: function(response) {
+                    console.log('error', response)
+                }
+                })
+
+            });
+            });
+
+            document.addEventListener("DOMContentLoaded", function() {
+                // Get all toggle links
+                var toggleLinks = document.querySelectorAll(".toggle-link");
+            
+                // Attach click event listener to each toggle link
+                toggleLinks.forEach(function(link) {
+                    link.addEventListener("click", function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+            
+                        // Get the parent post element
+                        var post = this.closest(".bulletin-post");
+            
+                        // Toggle visibility of full text
+                       var fullText = post.querySelector(".full-text");
+                        fullText.style.display = (fullText.style.display === "none") ? "inline" : "none";
+            
+                        //  Change toggle link text
+                        this.textContent = (fullText.style.display === "none") ? "Show more" : "Show less";
+                    });
+                });
+            });
+
+            lightbox.option({
+                'resizeDuration': 200,
+                'wrapAround': true
+            });
+
+        </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

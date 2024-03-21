@@ -1,0 +1,1 @@
+web: gunicorn chikaness.wsgi --log-file -

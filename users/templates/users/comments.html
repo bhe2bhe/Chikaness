@@ -1,0 +1,86 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-light">
+        <div class="container-xxl">
+            <a href="{% url 'users:index' %}" class="navbar-brand">
+                <span class="fw-bold text-secondary">
+                    <i class="bi bi-person-standing-dress"></i>
+                    I am Yaela
+                </span>
+            </a>
+
+            <!-- toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false"
+            aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end align-center" id="main-nav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="#yaela" class="nav-link">About Me</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#photos" class="nav-link">Featured Photos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#comments" class="nav-link">Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Log in</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- main -->
+    <div class="container-lg mt-5 mb-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-5 text-center text-md-start">
+                <h1>
+                    <div class="display-5 text-muted">Photo Caption</div>
+                </h1>
+                <p class="lead my-4 text-muted">BHe Lorem ipsum dolor sit, amet consectetur adipisicing elit. Error quisquam vitae modi facere eaque nihil harum aspernatur saepe, inventore totam amet numquam sed, voluptate quam, voluptatibus nemo? Minus.</p>
+                
+                <!-- open sidebar / offcanvas -->
+                    <!-- codes -->
+                <!-- offcanvas end -->
+            </div>
+            <div class="col-sm-8 col-md-5 text-center">
+                <span class="tt" data-bs-placement="bottom" title="Y&Z">
+                    <img class="img-fluid" style="box-shadow: 0 1px 8px black;
+                    border-radius: 10px;" src="{% static 'users/images/main.jpg' %}" alt="">
+                </span>
+            </div>
+        </div>
+    </div>    
+
+    <!-- comments -->
+    <div class="container bg-light text-center mt-5">
+        <div class="display-6 text-muted mb-5">What My Friends Say About This Photo</div>
+        <div class="px-5 py-2">
+            <p class="text-muted">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, dolor aut saepe voluptates molestias voluptas ab tempore beatae ea dolorum id? Quos natus eius accusamus eveniet temporibus minima omnis facilis."</p>
+            <p class="align-end fw-bold">-- Maria Clara</p>
+            <hr>
+        </div>
+        <div class="px-5 py-2">
+            <p class="text-muted">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, dolor aut saepe voluptates molestias voluptas ab tempore beatae ea dolorum id? Quos natus eius accusamus eveniet temporibus minima omnis facilis."</p>
+            <p class="align-end fw-bold">-- Maria Clara</p>
+            <hr>
+        </div>
+        <div class="px-5 py-2">
+            <p class="text-muted">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum, dolor aut saepe voluptates molestias voluptas ab tempore beatae ea dolorum id? Quos natus eius accusamus eveniet temporibus minima omnis facilis."</p>
+            <p class="align-end fw-bold">-- Maria Clara</p>
+            <hr>
+        </div>
+        <p class="text-danger">Sorry you cannot make a comment.</p>
+        <a href="#">Request for access.</a>
+    </div>
+
+{% endblock %}

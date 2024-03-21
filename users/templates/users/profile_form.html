@@ -1,0 +1,51 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+<div class="container bg-light px-5 py-5">
+    <h2 class="pt-5 display-6">{{ user.username }}, create/edit your profile here...</h2>
+    <form method="post" enctype="multipart/form-data" class="px-4 py-3">
+      {% csrf_token %}
+      <div class="mb-3">
+        <img width="100" height="100" style="object-fit:cover; border-radius: 50px; margin-bottom:14px;" src="{{user_profile.profile_pic.url}}" /><br>
+        <label for="image" class="form-label fw-bold">Change Profile Image</label>
+        <input type="file" name="image" id="image" class="form-control shadow-none bg-gray-100">
+      </div>
+    
+      <div class="mb-3">
+        <label for="motto" class="form-label fw-bold">Favorite Expression:</label>
+        <textarea id="motto" name="motto" class="form-control">{{user_profile.motto}}</textarea>
+      </div>
+    
+      <div class="mb-3">
+        <label for="about_yourself" class="form-label fw-bold">About yourself:</label>
+        <textarea id="about_yourself" name="about_yourself" class="form-control">{{user_profile.about_yourself}}</textarea>
+      </div>
+    
+      <div class="mb-3">
+        <label for="q1" class="form-label fw-bold">My most memorable experience:</label>
+        <textarea id="q1" name="q1" class="form-control">{{user_profile.q1}}</textarea>
+      </div>
+    
+      <div class="mb-3">
+        <label for="q2" class="form-label fw-bold">What makes me happy:</label>
+        <textarea id="q2" name="q2" class="form-control">{{user_profile.q2}}</textarea>
+      </div>
+    
+      <div class="mb-3">
+        <label for="q3" class="form-label fw-bold">My favorites:</label>
+        <textarea id="q3" name="q3" class="form-control">{{user_profile.q3}}</textarea>
+      </div>
+    
+      <div class="mb-3">
+        <label for="q4" class="form-labe fw-bold">Things most people like but I don't:</label>
+        <textarea id="q4" name="q4" class="form-control">{{user_profile.q4}}</textarea>
+      </div>
+    
+      <button type="submit" class="btn btn-primary px-5">Submit</button>
+      <a href="{% url 'users:index' %}" class="btn btn-outline-primary px-5">Cancel</a>
+     </form>
+  </div>
+  
+
+{% endblock %}

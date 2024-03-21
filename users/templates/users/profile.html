@@ -1,0 +1,313 @@
+{% load static %}
+{% load user_tags %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <title>{{ profile.username }}</title>
+    <style>
+        .fixed-height {
+            height: 400px; /* Set the desired fixed height */
+        }
+    </style>
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-xxl">
+            <span class="navbar-brand">
+                {% if request.user == profile.user %}
+                    <span class="fw-bold">
+                        <i class="bi bi-shield-fill-exclamation text-warning"></i>
+                        Your own profile.
+                    </span>
+                {% else %}
+                    <span class="fw-bold text-white">
+                        <i class="bi bi-shield-fill-exclamation"></i>
+                        <span class="text-warning">{{ profile.user }}'s</span> profile.
+                    </span>
+                {% endif %}
+            </span>
+
+            <!-- toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="false"
+            aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end align-center" id="main-nav">
+                <ul class="navbar-nav">
+                    <form class="d-flex" role="search" action="{% url 'users:search' %}" method='POST'>
+                        {% csrf_token %}
+                        <input class="form-control me-2" type="text" name="username" placeholder="Search for user..." aria-label="Search">
+                        <button class="btn btn-outline-warning" type="submit"><i class="bi bi-search-heart"></i></button>
+                    </form>
+                    <li class="nav-item">
+                        <a href="{% url 'users:index' %}" class="nav-link text-white">
+                            <i class="bi bi-house-heart-fill text-white"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'blogs:blogs' %}" class="nav-link text-white"><i class="bi bi-journal"></i>Blogs</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'logout' %}" class="btn btn-outline-warning">Log Me Out, Gotta Run</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}" class="btn btn-primary">Log Me In</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div style="margin-top:56px;" class="alert alert-{{ message.tags }} bg-warning">
+            {{ message|safe }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- main image & intro text -->
+    <section id="yaela">
+        <div class="container-lg" style="margin-top:80px;">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <h1>
+                        <div class="display-6 text-muted"><i>"{{ profile.motto }}"</i></div>
+                    </h1>
+                    <p class="lead my-4">{{ profile.about_yourself }}</p>
+                    
+                    <!-- open sidebar / offcanvas -->
+                        <!-- codes -->
+                    <!-- offcanvas end -->
+                    
+                </div>
+                <div class="col-sm-8 col-md-5 text-center">
+                        <img class="img-fluid mb-4" style="box-shadow: 0 1px 8px black;
+                        border-radius: 10px;" src="{{ profile.profile_pic.url }}" alt="">
+                    <form action="{% url 'users:follow' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{user.username}}" name="follower"/>
+					    <input type="hidden" value="{{user_object.username}}" name="user"/>
+                        <h3>{{ profile.user.username }}
+                            {% if profile.verified %}
+                            <span>
+                                <span style="font-size:12px;">VERIFIED <i class="bi bi-check-circle-fill text-warning"></i>
+                            </span>
+                            {% endif %}
+                        </h3>
+                        
+                        {% if user.is_authenticated %}
+                            {% if user_object.username == user.username %}
+                            <a href="{% url 'users:create-profile' %}" class="btn btn-outline-warning">Edit Profile</a>
+                            {% else %}
+                            <a data-ripple=""><button type="submit" class="btn btn-warning">{{button_text}}</button></a>
+                            {% endif %}
+                        {% endif %}
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- accordion -->
+    <section id="profile-about-me" class="bg-light">
+        <div class="container">
+            <div class="justify-content-center align-items-center">
+                <ul class="navbar nav my-4 bg-light mx-auto px-5 d-flex flex-wrap ustify-content-center align-items-center bg-dark">
+                    <li>
+                        <a href="{% url 'blogs:user-blogs' username=profile %}" style="text-decoration:none; font-size:18px; font-weight:bold;" class="text-warning"></i>{{ user_blog_count }} Blogs</a>
+                    </li>
+                    <li>                        
+                        <a href="{% url 'users:user-announcements' username=profile %}" style="text-decoration:none; font-size:18px; font-weight:bold;" class="text-warning">
+                        {% if user_posts_length == 1%}
+                            </i>{{user_posts_length}} Announcement</a>
+                        {% else %}
+                            </i>{{user_posts_length}} Announcements</a>
+                        {% endif %}
+                    </li>
+                
+                    <li>                        
+                        <a href="{% url 'users:user-followers' username=profile %}" style="text-decoration:none; font-size:18px; font-weight:bold;" class="text-warning">
+                        {% if user_following_length == 1%}
+                            </i>{{user_following_length}} Follower</a>
+                        {% else %}
+                            </i>{{user_following_length}} Followers</a>
+                        {% endif %}
+                    </li>
+                    <li>
+                        <a href="{% url 'users:user-following' username=profile %}" style="text-decoration:none; font-size:18px; font-weight:bold;" class="text-warning">
+                            </i>{{user_followers_length}} Following</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="container-md">
+            <div class="text-center mt-3 pt-3" >
+                <h2>Bits About {{ profile.user }}</h2>
+                <p class="lead text-muted">A quick glance...</p>
+            </div>
+
+            <div class="row my-2 g-5 justify-content-around align-items-center">
+
+                <div class="col-lg-6 mb-4">
+                <!-- accordion -->
+                <div class="accordion" id="chapters">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-1">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#chapter-1" aria-expanded="true"
+                            aria-controls="chapter-1">My Most Memorable Experience</button>
+                        </h2>
+                        <div id="chapter-1" class="accordion-collapse collapse"
+                        aria-labelledby="heading-1" data-bs-parent="#chapters">
+                            <div class="accordion-body">
+                                <p class="text-muted"><i>{{ profile.q1 }}</i></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#chapter-2" aria-expanded="true"
+                            aria-controls="chapter-2">What Makes Me Happy</button>
+                        </h2>
+                        <div id="chapter-2" class="accordion-collapse collapse"
+                        aria-labelledby="heading-2" data-bs-parent="#chapters">
+                            <div class="accordion-body">
+                                <p class="text-muted"><i>{{ profile.q2 }}</i></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#chapter-3" aria-expanded="false"
+                            aria-controls="chapter-1">My Favorites</button>
+                        </h2>
+                        <div id="chapter-3" class="accordion-collapse collapse"
+                        aria-labelledby="heading-3" data-bs-parent="#chapters">
+                            <div class="accordion-body">
+                                <p class="text-muted"><i>{{ profile.q3 }}</i></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#chapter-4" aria-expanded="false"
+                            aria-controls="chapter-1">Things Most People Like But I Don't</button>
+                        </h2>
+                        <div id="chapter-4" class="accordion-collapse collapse"
+                        aria-labelledby="heading-4" data-bs-parent="#chapters">
+                            <div class="accordion-body">
+                                <p class="text-muted"><i>{{ profile.q4 }}</i></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="bulletin-board">
+        <div class="container mb-0 pb-5 mt-5">
+            <div class="text-center">
+                <img width="120" height="120" style="object-fit:cover; border-radius:60px;" src="{{ profile.profile_pic.url }}"/><br>
+            </div>
+            <div class="text-center pt-3">
+                {% if user != profile.user %}
+                    <h2>{{ profile.user }}'s Bulletin Board</h2>
+                    <p class="lead">Let {{ profile.user }} know what you think...</p>
+                {% else %}
+                    <h2>Your Bulletin Board</h2>
+                    <p class="lead">What friends of <strong>{{profile.user}}</strong> say...</p>
+                {% endif %}
+            </div>
+            
+            
+
+                
+            <div class="row justify-content-center">
+                
+                <div class="col-md-8 text-center">
+                    {% if user.is_authenticated %}
+                        {% if user != profile.user %}
+                            <form action="{% url 'users:profile-bulletin-board' username=profile.user %}" method="POST">
+                                {% csrf_token %}    
+                                <div class="form-floating">
+                                    <textarea class="form-control" name="content" id="floatingTextarea" oninput="autoAdjustTextarea()"></textarea>
+                                    <label for="floatingTextarea"><span class="text-secondary fst-italic">Say something...</span></label>
+                                </div>
+                                <button type="submit" class="btn btn-warning mt-3">
+                                    Post on {{ profile.user }}'s Bulletin Board
+                                </button>
+                            </form>
+                        {% else %}
+                            <p style="margin-bottom:1px; font-size:12px;">(You cannot make announcementson your own profile,</p> 
+                            <a href="{% url 'users:show-bulletin-board' %}" class="text-warning fst-italic" style="text-decoration:none;"> Post something on the public Bulletin Board</a>
+                            <p style="font-size:12px;"> instead)</p>
+                        {% endif %}
+                    {% else %}
+                        <a class="fst-italic text-warning" style="text-decoration:none;" href="/login">Log in to interact</a>
+                    {% endif %}
+                                        
+
+
+                </form>
+                    <!-- this is where the loop for bulletin board starts -->
+                    {% for post in profile.profilebulletinboard_set.all reversed %}
+                    <div class="border border-success p-2 my-5" style="--bs-border-opacity: .5;">                        
+                        <div class="bg-light">
+                            <p class="fw-bold">
+                                <a class="text-warning fw-bold" href="{% url 'profile' username=post.user %}" style="text-decoration: none; font-size:20px;">
+                                {{ post.user }} </a> <span>&#8226;</span>
+                                <span style="font-size:10px; color:gray;">
+                                    ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                                </span></p>
+                                
+                                {% if post.user == user.username %}
+                        <form action="{% url 'users:profile-delete-post' post.id %}" method="POST">
+                            {% csrf_token %}                   
+                            <button type="submit" class="text-danger" style="border:none;"><i class="bi bi-trash"></i></button>
+                            <span style="font-size: 10px; ">Delete announcement</span>                          
+                        </form>
+                            {% endif %}
+                            
+
+                        </div>
+                        <p class="text-muted my-4">
+                            {{ post.content }} 
+                        </p>
+                    </div>
+                    
+                    {% endfor %}
+                </form>
+                    
+                    <!-- loop ends here -->
+               
+                </div>     
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

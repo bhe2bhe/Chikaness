@@ -1,0 +1,184 @@
+{% extends 'blogs/base.html' %}
+
+
+{% block content %}
+
+<div class="container bg-light px-5 py-5">
+    <h2 class="pt-5 display-6">{{ user.username }}, create your blog here...</h2>
+    <small>Editing is not available. Please review your blog carefully before submission.</small>
+    <form method="POST" enctype="multipart/form-data" class="px-4 py-3">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="title" class="form-label fw-bold">Blog Title</label>
+        <input field="text" id="title" name="title" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label for="category" class="form-label fw-bold">Category</label>
+        <select id="category" name="category" class="form-select">
+            {% for category in categories %}
+                <option value="{{ category.0 }}">{{ category.1 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+      <div class="mb-3">
+        <label for="pen_name" class="form-label fw-bold">Author:</label>
+        <input type="text" id="pen_name" name="pen_name" class="form-control">
+            <small>Leave blank to use your username as author name</small> </div>
+      <div class="mb-3">
+        <label for="image" class="form-label fw-bold">Primary Blog Image</label>
+        <input type="file" name="image" id="image" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview1">
+      </div>
+      <img id="image-preview1" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+      <small>(Landscape photo recommended)</small> 
+      
+      
+      <div class="mb-3">
+        <label for="content" class="form-label fw-bold">Main Content</label>
+        <textarea id="content" name="content" class="form-control" style="resize: vertical; height:320px;"></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="teaser" class="form-label fw-bold">What is your blog about?</label>
+        <small>Write a short description of your blog</small>
+        <textarea id="teaser" name="teaser" class="form-control" style="resize: vertical; height:160px;"></textarea>
+      </div>
+      <hr>
+      <p>This image field is optional</p>
+      <div class="mb-3">
+        <label for="image_end" class="form-label fw-bold">Blog Image -- End</label>
+        <input type="file" name="image_end" id="image_end" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview2">
+      </div>
+      <img id="image-preview2" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+      <input type="text" name="image_end_caption" id="image_end_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+      <h4 class="text-center text-muted pt-2">Congratulations! You can skip the following fields and hit Publish</h4>
+      <hr>
+    </div>
+
+      <div class="container bg-light px-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-8 pb-4">
+            <h4 class="text-muted">If blog is divided into sections, continue here (the above field will be your Section 1)...</h4>
+            <small>You can skip any field and just carry on with submission</small>
+            <hr>
+            <div class="mb-3">
+                <label for="image2" class="form-label fw-bold">Section 2 Blog Image</label>
+                <input type="file" name="image2" id="image2" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview3">
+            </div>
+            <img id="image-preview3" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image2_caption" id="image2_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            
+            <div class="mb-3">
+                <label for="content2" class="form-label fw-bold">Section 2 Content</label>
+                <textarea id="content2" name="content2" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image3" class="form-label fw-bold">Section 3 Blog Image</label>
+                <input type="file" name="image3" id="image3" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview4">
+            </div>
+            <img id="image-preview4" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image3_caption" id="image3_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            
+            <div class="mb-3">
+                <label for="content3" class="form-label fw-bold">Section 3 Content</label>
+                <textarea id="content3" name="content3" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image4" class="form-label fw-bold">Section 4 Blog Image</label>
+                <input type="file" name="image4" id="image4" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview5">
+            </div>
+            <img id="image-preview5" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image4_caption" id="image4_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content4" class="form-label fw-bold">Section 4 Content</label>
+                <textarea id="content4" name="content4" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image5" class="form-label fw-bold">Section 5 Blog Image</label>
+                <input type="file" name="image5" id="image5" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview6">
+            </div>
+            <img id="image-preview6" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image5_caption" id="image5_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content5" class="form-label fw-bold">Section 5 Content</label>
+                <textarea id="content5" name="content5" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image6" class="form-label fw-bold">Section 6 Blog Image</label>
+                <input type="file" name="image6" id="image6" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview7">
+            </div>
+            <img id="image-preview7" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image6_caption" id="image6_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content6" class="form-label fw-bold">Section 6 Content</label>
+                <textarea id="content6" name="content6" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image7" class="form-label fw-bold">Section 7 Blog Image</label>
+                <input type="file" name="image7" id="image7" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview8">
+            </div>
+            <img id="image-preview8" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image7_caption" id="image7_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content7" class="form-label fw-bold">Section 7 Content</label>
+                <textarea id="content7" name="content7" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image8" class="form-label fw-bold">Section 8 Blog Image</label>
+                <input type="file" name="image8" id="image8" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview9">
+            </div>
+            <img id="image-preview9" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image8_caption" id="image8_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content8" class="form-label fw-bold">Section 8 Content</label>
+                <textarea id="content8" name="content8" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <label for="image9" class="form-label fw-bold">Section 9 Blog Image</label>
+                <input type="file" name="image9" id="image9" class="form-control shadow-none bg-gray-100" data-preview-id="image-preview10">
+            </div>
+            <img id="image-preview10" src="#" alt="" style="max-width: 100px; max-height: 100px;">
+            <input type="text" name="image9_caption" id="image9_caption" placeholder="short photo caption..." class="form-control shadow-none bg-gray-100">
+            <div class="mb-3">
+                <label for="content9" class="form-label fw-bold">Section 9 Content</label>
+                <textarea id="content9" name="content9" class="form-control" style="resize: vertical; height:200px;"></textarea>
+            </div>
+            <hr>
+            <button type="submit" class="btn btn-primary px-5">Publish</button>
+            <a href="{% url 'blogs:blogs' %}" class="btn btn-outline-primary px-5">Cancel</a>
+
+            
+          </form>
+    </div>
+    </div>
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        // Function to show thumbnail preview
+        function readURL(input, previewId) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#' + previewId).attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    
+        // Trigger the function for each image input
+        $("[id^='image']").change(function() {
+            var previewId = $(this).data('preview-id');
+            readURL(this, previewId);
+        });
+    });
+    </script>
+    
+    
+{% endblock %}

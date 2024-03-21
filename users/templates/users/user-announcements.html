@@ -1,0 +1,144 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+
+        <div class="text-center mt-4 pt-5">
+            <img width="120" height="120" style="object-fit:cover; border-radius:60px;" src="{{ profile.profile_pic.url }}"/><br>
+        </div>
+        
+        
+        <div class="text-center pt-3">
+            <h2>{{profile.user}}'s Annoucements</h2>
+            
+        </div>
+            
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+
+                <!-- this is where the loop for bulletin board starts -->
+
+                {% for post in announcements %}
+                <div class="bg-light border border-2 border-warning p-2 mb-3" style="
+                border-radius:10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                ">     
+                <div class="">
+                    {% if post.highlight %}
+                    <p style="font-size:12px;
+                            font-weight:bolder; color:rgb(255, 191, 0);
+                            margin-bottom: 1px;">HIGHLIGHT</p>
+                        {% endif %}                    
+                    <p class="fw-bold text-warning">
+                        <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">
+                            {% if post.highlight %}
+                            <i class="bi bi-check-circle-fill text-warning"></i> 
+                            {% endif %}                       
+                            <span>{{ post.user }}</span>                                
+                        </a>                   
+                            <span style="font-size:10px; color:gray;">
+                            ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                        </span>
+                    </p>
+                    {% if post.user == user.username %}
+                    <form action="{% url 'users:delete-post' post.id %}" method="POST">
+                        {% csrf_token %}                   
+                        <button type="submit" class="text-danger" style="border:none; background-color:white;"><i class="bi bi-trash"></i></button>
+                        <span style="font-size: 10px; ">Delete announcement</span>                          
+                    </form>
+                {% endif %}
+                
+                <div class="row align-items-center pt-3">
+                    <div class="col-lg-5">
+                        <a href="{{ post.image.url }}" data-lightbox="image">
+                            <img src="{{ post.image.url }}" style="object-fit:cover; width:100%; height: 300px;">
+                        </a>
+                    </div>
+                    <div class="col-lg-7">
+                        <p class="text-muted my-4" style="text-align: left;">
+                            <div class="bulletin-post" id="post{{ post.id }}">
+                                {{ post.content|truncatewords:60 }}
+                                {% if post.content|wordcount > 60 %}
+                                    <!-- Hidden full text -->
+                                    <span class="full-text" style="display: none;">
+                                        {{ post.content }}
+                                    </span>
+                                    <!-- Toggle link -->
+                                    <a href="#" class="toggle-link" style="
+                                    text-decoration:none; 
+                                    color:blue;">Show more</a>
+                                {% endif %}
+                            </div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <form action="{% url 'users:like-post' %}" method="POST" class="like-form" id="{{post.id}}">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                
+                <p class="fst-italic" style="font-size:12px;">
+                    {% if user not in post.liked.all %}
+                    <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                        Send a star
+                    </button>                                
+                    {% else %}
+                    <button type="submit" style="border:none; border-radius:5px; background-color:#ebc805;" class="like-btn{{post.id}}">
+                        Unsend star
+                    </button>
+                    {% endif %} 
+                    <div class="d-inline fw-bold">
+                        <a href="{% url 'users:likers' post.id %}" 
+                        {% comment %} data-bs-toggle="modal" data-bs-target="#likersModal"> {% endcomment %}
+                            <span class="like-count{{post.id}}">{{ post.no_of_likes }}</a></span> 
+                        <span><i class="bi bi-star-fill text-danger"></i></span> || 
+                        <a href="{% url 'users:likers' post.id %}">
+                            <span>{{ post.no_of_comments }}</span></a>
+                            {% if post.no_of_comments == 1 %}Comment
+                            {%else%} Comments {% endif %}                      
+                    </div>
+                </p>
+            </form>
+        </div>
+                {% endfor %}
+                <!-- loop ends here -->        
+        
+
+        <div class="pagination text-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item {% if not announcements.has_previous %}disabled{% endif %}">
+                        <a class="page-link" href="?page=1" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% for page_num in announcements.paginator.page_range %}
+                    <li class="page-item {% if page_num == announcements.number %}active{% endif %}">
+                        <a class="page-link bg-dark" style="border-radius:10px;" href="?page={{ page_num }}">{{ page_num }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if announcements.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ announcements.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link" aria-hidden="true">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        
+            </div>     
+        </div>
+    </div>
+</section>
+
+    
+
+<!-- Modal -->
+{% include 'users/likers-modal.html' %}
+
+{% endblock %}
