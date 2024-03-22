@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,6 +56,12 @@ MIDDLEWARE = [
 
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
+        'https://*.railway.app',
+        'https://web-production-d21e.up.railway.app',
+        'https://chikaness.com',
+    ]
+
+    CORS_ALLOWED_ORIGINS = [
         'https://*.railway.app',
         'https://web-production-d21e.up.railway.app',
         'https://chikaness.com',
