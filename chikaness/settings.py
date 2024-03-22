@@ -55,13 +55,7 @@ MIDDLEWARE = [
 
 if not DEBUG:
     CSRF_TRUSTED_ORIGINS = [
-        'https://*.railway.app',
-        'chikaness.com',
-    ]
-
-    CORS_ALLOWED_ORIGINS = [
-        'https://*.railway.app',
-        'chikaness.com',
+        'https://*.railway.app'
     ]
 
 ROOT_URLCONF = 'chikaness.urls'
