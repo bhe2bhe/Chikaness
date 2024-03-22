@@ -130,10 +130,11 @@
                                 {% endif %}
                             </div>
                         </p>
-                    </div>
-                    
+                    </div>                    
                 </div>
-                {% else %}  
+                {% endfor %}
+                {% for post in posts %}
+                {% if not post.highlight %}  
                 <div class="border border-2 border-warning p-2 mb-3" style="
                     border-radius:10px;
                     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -153,7 +154,7 @@
                             <button type="submit" class="text-danger" style="border:none; background-color: white;"><i class="bi bi-trash"></i></button>
                             <span style="font-size: 10px; ">Delete announcement</span>                          
                         </form>
-                    {% endif %}
+                        {% endif %}
                     
                     <div class="row align-items-center pt-3">
                         <div class="col-lg-5">
@@ -182,7 +183,7 @@
                     </div>
                     
                     
-                {% endif %}                       
+                {% endfor %}                       
 
                     </div>
                     <form action="{% url 'users:like-post' %}" method="POST" class="like-form" id="{{post.id}}">
