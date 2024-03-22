@@ -53,15 +53,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'web-production-d21e.up.railway.app',
-    'chikaness.com',
-]
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        'web-production-d21e.up.railway.app',
+        'chikaness.com',
+    ]
 
-CORS_ALLOWED_ORIGINS = [
-    'https://web-production-d21e.up.railway.app',
-    'chikaness.com',
-]
+    CORS_ALLOWED_ORIGINS = [
+        'https://web-production-d21e.up.railway.app',
+        'chikaness.com',
+    ]
 
 ROOT_URLCONF = 'chikaness.urls'
 
