@@ -40,7 +40,7 @@ def show_blog(request, pk):
     # Pass the blog object to the template for rendering
     return render(request, 'blogs/blog.html', {'blog': blog, 'comments':comments})
 
-@login_required  # Ensure the user is authenticated
+@login_required
 def create_blog(request, blog_id=None):
     categories = Blog.CATEGORIES
     if blog_id:
@@ -49,20 +49,93 @@ def create_blog(request, blog_id=None):
         blog = None
     
     if request.method == 'POST':
-        form = BlogForm(request.POST, request.FILES, instance=blog)
-        if form.is_valid():
-            # Assign the current user as the author before saving
-            blog = form.save(commit=False)
-            if not blog.author_id:  # Check if author is not set
-                blog.author = request.user  # Assign the current user as the author
-            blog.save()
-            form.save_m2m()  # Save many-to-many relationships
-            messages.success(request, 'Blog published! Good job!')
-            return redirect('blogs:blogs')
-    else:
-        form = BlogForm(instance=blog)
+        # Retrieve data from the request
+        title = request.POST.get('title')
+        pen_name = request.POST.get('pen_name')
+        teaser = request.POST.get('teaser')
+        content = request.POST.get('content')
+        content2 = request.POST.get('content2')
+        content3 = request.POST.get('content3')
+        content4 = request.POST.get('content4')
+        content5 = request.POST.get('content5')
+        content6 = request.POST.get('content6')
+        content7 = request.POST.get('content7')
+        content8 = request.POST.get('content8')
+        content9 = request.POST.get('content9')
+        content10 = request.POST.get('content10')
+        
+        # Image fields
+        image = request.FILES.get('image')
+        image_end = request.FILES.get('image_end')
+        image2 = request.FILES.get('image2')
+        image3 = request.FILES.get('image3')
+        image4 = request.FILES.get('image4')
+        image5 = request.FILES.get('image5')
+        image6 = request.FILES.get('image6')
+        image7 = request.FILES.get('image7')
+        image8 = request.FILES.get('image8')
+        image9 = request.FILES.get('image9')
+        
+        # Image caption fields
+        image_end_caption = request.POST.get('image_end_caption')
+        image2_caption = request.POST.get('image2_caption')
+        image3_caption = request.POST.get('image3_caption')
+        image4_caption = request.POST.get('image4_caption')
+        image5_caption = request.POST.get('image5_caption')
+        image6_caption = request.POST.get('image6_caption')
+        image7_caption = request.POST.get('image7_caption')
+        image8_caption = request.POST.get('image8_caption')
+        image9_caption = request.POST.get('image9_caption')
+        
+        # Assuming the current user is the author
+        author = request.user
+
+        # Create a new Blog object
+        blog = Blog(
+            title=title,
+            pen_name=pen_name,
+            teaser=teaser,
+            content=content,
+            content2=content2,
+            content3=content3,
+            content4=content4,
+            content5=content5,
+            content6=content6,
+            content7=content7,
+            content8=content8,
+            content9=content9,
+            content10=content10,
+            image=image,
+            image_end=image_end,
+            image2=image2,
+            image3=image3,
+            image4=image4,
+            image5=image5,
+            image6=image6,
+            image7=image7,
+            image8=image8,
+            image9=image9,
+            image_end_caption=image_end_caption,
+            image2_caption=image2_caption,
+            image3_caption=image3_caption,
+            image4_caption=image4_caption,
+            image5_caption=image5_caption,
+            image6_caption=image6_caption,
+            image7_caption=image7_caption,
+            image8_caption=image8_caption,
+            image9_caption=image9_caption,
+            author=author,
+            # Add more fields as needed
+        )
+        
+        # Save the blog object
+        blog.save()
+        
+        messages.success(request, 'Blog published! Good job!')
+        return redirect('blogs:blogs')
     
-    return render(request, 'blogs/blog_form.html', {'form': form, 'categories': categories})
+    return render(request, 'blogs/blog_form.html', {'categories': categories})
+
 
 def category(request, category):
     # Get blogs belonging to the specified category
