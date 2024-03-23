@@ -64,8 +64,8 @@
             <a href="{% url 'profile' username=post.user %}" style="text-decoration: none;">         
                 <span class="text-warning"><b>{{ comment.user }}</b></span>
                 <span style="font-size:10px; color:gray;">
-                    ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
-                </span>:                                
+                    ({{ post.created_at|date:"M-d-Y" }}):
+                </span>                             
             </a>  
                 {{comment.content|linebreaks}}
             </p>

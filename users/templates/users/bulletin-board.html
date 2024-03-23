@@ -145,7 +145,7 @@
                                     <span>{{ post.user }}</span>                                
                                 </a>                   
                                     <span style="font-size:10px; color:gray;">
-                                    ({{ post.created_at|date:"M-d-Y" }} || {{ post.created_at|time:"g:i A" }}):
+                                    ({{ post.created_at|date:"M-d-Y" }}):
                                 </span>
                             </p>
                             {% if post.user == user.username %}
