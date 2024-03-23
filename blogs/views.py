@@ -40,29 +40,6 @@ def show_blog(request, pk):
     # Pass the blog object to the template for rendering
     return render(request, 'blogs/blog.html', {'blog': blog, 'comments':comments})
 
-# @login_required
-# def create_blog(request):    
-#     categories = Blog.CATEGORIES 
-#     blog_id = request.GET.get('blog_id')
-#     if blog_id:
-#         blog = get_object_or_404(Blog, pk=blog_id)
-#     else:
-#         blog = None
-    
-#     if request.method == 'POST':
-#         form = BlogForm(request.POST, request.FILES, instance=blog)
-#         if form.is_valid():
-#             # Assign the current user as the author before saving
-#             blog = form.save()
-#             blog.author = request.user  # Assuming request.user is the logged-in user
-#             blog.save()
-#             messages.success(request, 'Blog published! Good job!')
-#             return redirect('blogs:blogs')
-#     else:
-#         form = BlogForm(instance=blog)
-    
-#     return render(request, 'blogs/blog_form.html', {'form': form, 'categories':categories})
-
 @login_required  # Ensure the user is authenticated
 def create_blog(request, blog_id=None):
     categories = Blog.CATEGORIES
@@ -86,6 +63,7 @@ def create_blog(request, blog_id=None):
         form = BlogForm(instance=blog)
     
     return render(request, 'blogs/blog_form.html', {'form': form, 'categories': categories})
+
 def category(request, category):
     # Get blogs belonging to the specified category
     blogs = Blog.objects.filter(category__iexact=category)
