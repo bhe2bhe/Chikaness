@@ -87,6 +87,9 @@ def create_blog(request, blog_id=None):
         image8_caption = request.POST.get('image8_caption')
         image9_caption = request.POST.get('image9_caption')
         
+        # Retrieve the category from the request
+        category = request.POST.get('category')
+        
         # Assuming the current user is the author
         author = request.user
 
@@ -124,6 +127,7 @@ def create_blog(request, blog_id=None):
             image7_caption=image7_caption,
             image8_caption=image8_caption,
             image9_caption=image9_caption,
+            category=category, 
             author=author,
             # Add more fields as needed
         )
@@ -134,7 +138,7 @@ def create_blog(request, blog_id=None):
         messages.success(request, 'Blog published! Good job!')
         return redirect('blogs:blogs')
     
-    return render(request, 'blogs/blog_form.html', {'categories': categories})
+    return render(request, 'blogs/blog_form.html', {'categories': Blog.CATEGORIES})
 
 
 def category(request, category):

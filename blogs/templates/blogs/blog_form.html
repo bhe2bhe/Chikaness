@@ -15,11 +15,11 @@
       <div class="mb-3">
         <label for="category" class="form-label fw-bold">Category</label>
         <select id="category" name="category" class="form-select">
-            {% for category in categories %}
-                <option value="{{ category.0 }}">{{ category.1 }}</option>
+            {% for category_key, category_name in categories %}
+                <option value="{{ category_key }}">{{ category_name }}</option>
             {% endfor %}
         </select>
-    </div>
+        </div>
       <div class="mb-3">
         <label for="pen_name" class="form-label fw-bold">Author:</label>
         <input type="text" id="pen_name" name="pen_name" class="form-control">
