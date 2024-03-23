@@ -7,7 +7,7 @@
     <title>Your Page Title</title>
     
     <!-- Open Graph meta tags for Facebook -->
-    <meta property="og:title" content="Your Page Title">
+    <meta property="og:title" content="{{ blog.title }}">
     <meta property="og:description" content="Description of your page">
     <meta property="og:image" content="URL to your thumbnail image">
     <meta property="og:url" content="{% url 'blogs:show-blog' pk=blog.id %}">
