@@ -49,6 +49,9 @@ def create_blog(request, blog_id=None):
         blog = None
     
     if request.method == 'POST':
+        # Create a form instance and populate it with data from the request
+        form = BlogForm(request.POST, request.FILES)
+        
         # Retrieve data from the request
         title = request.POST.get('title')
         pen_name = request.POST.get('pen_name')
@@ -132,11 +135,20 @@ def create_blog(request, blog_id=None):
             # Add more fields as needed
         )
         
-        # Save the blog object
-        blog.save()
+        if form.is_valid():  # Check if the form data is valid
+            # If the form is valid, save the blog object
+            blog = form.save(commit=False)
+            blog.author = request.user  # Assuming the current user is the author
+            blog.save()
+            
+            messages.success(request, 'Blog published! Good job!')
+            return redirect('blogs:blogs')
         
-        messages.success(request, 'Blog published! Good job!')
-        return redirect('blogs:blogs')
+        else:
+            messages.error(request, 'There was an issue processing the form. Check your input and try again.')
+    else:
+        # If the request method is not POST, 
+        form = BlogForm()        
     
     return render(request, 'blogs/blog_form.html', {'categories': Blog.CATEGORIES})
 
@@ -273,7 +285,7 @@ def add_comment(request):
             messages.success(request, 'Comment added!')
             
             # Redirect to the appropriate page
-            return redirect('blogs:show-blog', pk=blog_id )  # Replace 'post_detail' with your actual view name
+            return redirect('blogs:show-blog', pk=blog_id )  
         
         else:
             # Handle the case where content or post_id is empty

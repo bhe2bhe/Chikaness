@@ -1,4 +1,5 @@
 {% extends 'blogs/base.html' %}
+{% load static %}
 {% block content %}
 
 <head>
@@ -56,10 +57,15 @@
             {% endif %}
         <hr>
         </div>
-        <div class="col-md-8 text-center">
-            <img style="width:100%;height:auto" src="{{blog.image.url}}">
-        </div>
-
+        
+            <div class="col-md-8 text-center">
+                {% if blog.image %}
+                <img style="width:100%;height:auto" src="{{blog.image.url}}">
+                {% else %}
+                <img style="width:100%;height:auto" src="{% static 'blogs/images/blog-default.jpeg' %}">
+                {% endif %}
+            </div>
+        
         <div class="col-sm-8 text-start">
             <p class="lead my-4 text-muted">{{blog.content|linebreaks}}</p>
             
@@ -67,7 +73,7 @@
             <hr>
             <div class="row align-items-center">
                 <div class="col-8">
-                    <img style="width:100%;height:320px;object-fit:cover" src="{{blog.image2.url}}">
+                    <img style="width:100%;height:auto;object-fit:cover" src="{{blog.image2.url}}">
                 </div>    
                 <div class="col-4">
                     <p class="text-muted" style="font-size:10px;"><i>{{blog.image2_caption}}</i></p>
@@ -87,7 +93,7 @@
                     <p class="text-muted" style="font-size:10px;"><i>{{blog.image3_caption}}</i></p>
                 </div>
                 <div class="col-8">
-                    <img style="width:100%;height:320px;object-fit:cover" src="{{blog.image3.url}}">
+                    <img style="width:100%;height:auto;object-fit:cover" src="{{blog.image3.url}}">
                 </div>                
             </div>
             {% endif %}
@@ -99,7 +105,7 @@
             <hr>
             <div class="row align-items-center">
                 <div class="col-8">
-                    <img style="width:100%;height:320px;object-fit:cover" src="{{blog.image4.url}}">
+                    <img style="width:100%;height:auto;object-fit:cover" src="{{blog.image4.url}}">
                 </div>     
                 <div class="col-4">
                     <p class="text-muted" style="font-size:10px;"><i>{{blog.image4_caption}}</i></p>
@@ -117,7 +123,7 @@
                     <p class="text-muted" style="font-size:10px;"><i>{{blog.image5_caption}}</i></p>
                 </div>
                 <div class="col-8">
-                    <img style="width:100%;height:320px;object-fit:cover" src="{{blog.image5.url}}">
+                    <img style="width:100%;height:auto;object-fit:cover" src="{{blog.image5.url}}">
                 </div>                
             </div>
             {% endif %}
@@ -129,7 +135,7 @@
             <hr>
             <div class="row align-items-center">
                 <div class="col-8">
-                    <img style="width:100%;height:320px;object-fit:cover" src="{{blog.image6.url}}">
+                    <img style="width:100%;height:auto;object-fit:cover" src="{{blog.image6.url}}">
                 </div>        
                 <div class="col-4">
                     <p class="text-muted" style="font-size:10px;"><i>{{blog.image6_caption}}</i></p>
@@ -236,7 +242,7 @@
         </div>
     </div>
 </div>
-<div class="container bg-light text-center mt-5">
+<div class="container bg-light text-center mt-5 mb-4 pb-4">
     {% if comments %}    
     <div class="display-6 text-muted mb-5">Comments on this Blog:</div>
     {% for comment in comments reversed %}

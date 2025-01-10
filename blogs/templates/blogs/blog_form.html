@@ -4,8 +4,18 @@
 {% block content %}
 
 <div class="container bg-light px-5 py-5">
+    
     <h2 class="pt-5 display-6">{{ user.username }}, create your blog here...</h2>
-    <small>Editing is not available. Please review your blog carefully before submission.</small>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} bg-warning">
+        {{ message|safe }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    <small>Editing is not available. Please review your blog carefully before submission.</small><br>
+    <small>If you encounter service error, just hit back button and make sure to fill out <span class="fw-bold">Primary Blog Image</span> and other mandatory fields.</small><br>
+    <small>Do not refresh page, or you will lose your input.</small>
     <form method="POST" enctype="multipart/form-data" class="px-4 py-3">
       {% csrf_token %}
       <div class="mb-3">
