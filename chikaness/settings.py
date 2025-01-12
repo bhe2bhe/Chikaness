@@ -28,8 +28,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['chikaness.com', 'web-production-d21e.up.railway.app', '127.0.0.1', 'localhost']
 
-SECURE_SSL_REDIRECT = True
-
 # Application definition
 
 INSTALLED_APPS = [
